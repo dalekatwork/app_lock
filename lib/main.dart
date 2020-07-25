@@ -104,7 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               final MaterialPageRoute<void> materialPageRoute =
                   MaterialPageRoute<void>(
-                      builder: (BuildContext context) => CreateTimerForm());
+                      builder: (BuildContext context) =>
+                          const CreateTimerForm());
               Navigator.push(context, materialPageRoute);
             },
             child: const Text(
