@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:app_lock/frontend/createTimerForm/form.dart';
+import 'package:app_lock/frontend/createTimerForm/steppers.dart';
 
 void main() {
   runApp(MyApp());
