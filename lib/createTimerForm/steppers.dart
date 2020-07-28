@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:app_lock/frontend/createTimerForm/formElems/label.dart';
-import 'package:app_lock/frontend/createTimerForm/formElems/timer.dart';
+import 'package:app_lock/createTimerForm/formElems/timer.dart';
+
+import 'package:app_lock/entry.dart';
 
 class CreateTimerForm extends StatefulWidget {
   const CreateTimerForm({Key key, this.title}) : super(key: key);
@@ -23,6 +24,28 @@ class CreateTimerForm extends StatefulWidget {
 class _CreateTimerForm extends State {
   int _currentStep = 0;
   static const int _totalSteps = 3;
+  TextEditingController titleController;
+  int _hour = 0;
+  int _minute = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _fetchValues(int newHour, int newMinute) {
+    setState(() {
+      _hour = newHour;
+      _minute = newMinute;
+    });
+  }
+
+  String _fetchDisplayTime() {
+    String displayTime = '';
+    displayTime += _hour > 9 ? '$_hour:' : '0$_hour:';
+    displayTime += _minute > 9 ? '$_minute' : '0$_minute';
+    return displayTime;
+  }
 
   void _nextStep() {
     setState(() {
@@ -39,17 +62,8 @@ class _CreateTimerForm extends State {
   }
 
   void _saveForm() {
-    // setState(() {
-    // This call to setState tells the Flutter framework that something has
-    // changed in this State, which causes it to rerun the build method below
-    // so that the display can reflect the updated values. If we changed
-    // _counter without calling setState(), then the build method would not be
-    // called again, and so nothing would appear to happen.
-    // Factoring in, start index 0
-
-    // TODO: save form entry
-    // });
-    Navigator.pop(context);
+    final Entry entry = Entry(label: 'anc', timer: _fetchDisplayTime());
+    Navigator.of(context).pop(entry);
   }
 
   @override
@@ -60,10 +74,11 @@ class _CreateTimerForm extends State {
       ),
       body: Center(
           child: Stepper(
-        controlsBuilder: (BuildContext context,
-            {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-          return Row();
-        },
+        // controlsBuilder: (BuildContext context,
+        //     {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+        //   return Row();
+        // },
+        onStepContinue: _nextStep,
         currentStep: _currentStep,
         onStepCancel: () {
           if (_currentStep <= 0) return;
@@ -74,10 +89,14 @@ class _CreateTimerForm extends State {
         steps: <Step>[
           Step(
               title: const Text('Step 1: Set a label'),
-              content: LabelAdderForm(goToNext: _nextStep)),
+              content: TextField(
+                controller: titleController,
+                autofocus: true,
+                decoration: const InputDecoration(labelText: 'Title'),
+              )),
           Step(
               title: const Text('Step 2: Set a time limit '),
-              content: TimerForm(goToNext: _nextStep)),
+              content: TimePicker(fetchValues: _fetchValues)),
           Step(
             title: const Text('Step 3: Save entry'),
             content: RaisedButton(

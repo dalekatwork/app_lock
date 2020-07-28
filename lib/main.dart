@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:app_lock/frontend/createTimerForm/steppers.dart';
+import 'package:app_lock/entry.dart';
+import 'package:app_lock/createTimerForm/steppers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,18 +55,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _appTimerCounter = 0;
+  List<Entry> entry = <Entry>[];
+  // int _appTimerCounter = 0;
 
-  void _createAppTimer() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _appTimerCounter++;
-    });
+  SharedPreferences sharedPreferences;
+
+  @override
+  void initState() {
+    loadSharedPreferencesAndData();
+    super.initState();
   }
+
+  Future<void> loadSharedPreferencesAndData() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    loadData();
+  }
+
+  // void _createAppTimer() {
+  //   setState(() {
+  //     // This call to setState tells the Flutter framework that something has
+  //     // changed in this State, which causes it to rerun the build method below
+  //     // so that the display can reflect the updated values. If we changed
+  //     // _counter without calling setState(), then the build method would not be
+  //     // called again, and so nothing would appear to happen.
+  //     _appTimerCounter++;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // horizontal).
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('$_appTimerCounter'),
+          Text('$entry'),
           FlatButton(
             color: Colors.blue,
             textColor: Colors.white,
@@ -100,13 +118,18 @@ class _MyHomePageState extends State<MyHomePage> {
             disabledTextColor: Colors.black,
             padding: const EdgeInsets.all(8.0),
             splashColor: Colors.blueAccent,
-            // onPressed: _createAppTimer,
             onPressed: () {
-              final MaterialPageRoute<void> materialPageRoute =
-                  MaterialPageRoute<void>(
-                      builder: (BuildContext context) =>
-                          const CreateTimerForm());
-              Navigator.push(context, materialPageRoute);
+              Navigator.of(context)
+                  // ignore: always_specify_types
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return const CreateTimerForm();
+                // ignore: always_specify_types
+              })).then((obj) {
+                if (obj != null) {
+                  addItem(Entry(
+                      label: obj.label as String, timer: obj.timer as String));
+                }
+              });
             },
             child: const Text(
               'Add App Timer',
@@ -123,11 +146,37 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: center,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createAppTimer,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _createAppTimer,
+      //   tooltip: 'Increment',
+      //   child: Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void addItem(Entry item) {
+    // Insert an item into the top of our list, on index zero
+    entry.insert(0, item);
+    saveData();
+  }
+
+  void loadData() {
+    final List<String> listString = sharedPreferences.getStringList('list');
+    if (listString != null) {
+      entry = listString
+          .map((String item) =>
+              Entry.fromMap(json.decode(item) as Map<String, dynamic>))
+          .toList();
+
+      setState(() {
+        entry = entry;
+      });
+    }
+  }
+
+  void saveData() {
+    final List<String> stringList =
+        entry.map((Entry item) => json.encode(item.toMap())).toList();
+    sharedPreferences.setStringList('list', stringList);
   }
 }
