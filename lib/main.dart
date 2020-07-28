@@ -56,7 +56,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Entry> entry = <Entry>[];
-  // int _appTimerCounter = 0;
+  int _appTimerCounter = 0;
 
   SharedPreferences sharedPreferences;
 
@@ -71,16 +71,16 @@ class _MyHomePageState extends State<MyHomePage> {
     loadData();
   }
 
-  // void _createAppTimer() {
-  //   setState(() {
-  //     // This call to setState tells the Flutter framework that something has
-  //     // changed in this State, which causes it to rerun the build method below
-  //     // so that the display can reflect the updated values. If we changed
-  //     // _counter without calling setState(), then the build method would not be
-  //     // called again, and so nothing would appear to happen.
-  //     _appTimerCounter++;
-  //   });
-  // }
+  void _createAppTimer() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _appTimerCounter++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // horizontal).
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('$entry'),
+          Text('$$entry'),
           FlatButton(
             color: Colors.blue,
             textColor: Colors.white,
@@ -146,11 +146,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: center,
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _createAppTimer,
-      //   tooltip: 'Increment',
-      //   child: Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: FloatingActionButton(
+        onPressed: _createAppTimer,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
