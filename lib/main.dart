@@ -110,7 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
         // horizontal).
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('$$entry'),
+          Text('$_appTimerCounter'),
+          Text('$entry'),
           FlatButton(
             color: Colors.blue,
             textColor: Colors.white,
