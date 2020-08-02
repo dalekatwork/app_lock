@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:app_lock/createTimerForm/formElems/timer.dart';
+import 'package:app_lock/createTimerForm/timer.dart';
 
 import 'package:app_lock/entry.dart';
 
@@ -24,7 +24,7 @@ class CreateTimerForm extends StatefulWidget {
 class _CreateTimerForm extends State {
   int _currentStep = 0;
   static const int _totalSteps = 3;
-  TextEditingController titleController;
+  final TextEditingController _controller = TextEditingController();
   int _hour = 0;
   int _minute = 0;
 
@@ -62,7 +62,8 @@ class _CreateTimerForm extends State {
   }
 
   void _saveForm() {
-    final Entry entry = Entry(label: 'anc', timer: _fetchDisplayTime());
+    final Entry entry =
+        Entry(label: _controller.text, timer: _fetchDisplayTime());
     Navigator.of(context).pop(entry);
   }
 
@@ -90,7 +91,7 @@ class _CreateTimerForm extends State {
           Step(
               title: const Text('Step 1: Set a label'),
               content: TextField(
-                controller: titleController,
+                controller: _controller,
                 autofocus: true,
                 decoration: const InputDecoration(labelText: 'Title'),
               )),

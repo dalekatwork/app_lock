@@ -13,7 +13,7 @@ class Entry {
 
   // ignore: always_specify_types
   Map<String, dynamic> toMap() => {
-        'title': label,
-        'completed': timer,
+        'label': label,
+        'timer': timer,
       };
 }
